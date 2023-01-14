@@ -5,7 +5,7 @@ using Yarn.Unity;
 using UnityEngine.UI;
 // using DG.Tweening;
 
-public class comds : MonoBehaviour
+public class custumYarnCommands : MonoBehaviour
 {
     public DialogueRunner DR;
 // ============= Yarn command defining  ===========
@@ -105,7 +105,7 @@ public void rotateIlustration(
 // ========= object activate code =============
 public void obejctActive(string objectName, string setMode)
 {
-    var objectis = GameObject.Find("Ilustration_System").transform.FindChild(objectName);
+    var objectis = GameObject.Find("Ilustration_System").transform.Find(objectName);
     if (setMode=="False") 
     {
         objectis.gameObject.SetActive(false);
