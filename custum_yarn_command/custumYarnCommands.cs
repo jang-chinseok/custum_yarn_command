@@ -16,7 +16,8 @@ private void Awake() {
                 DR.AddCommandHandler<string,float,float,float,float>("rotateIlustration", rotateIlustration);
                 DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
                 DR.AddCommandHandler<string,float,float>("fade", fade);
-    }
+                DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
+    }               
 // =========== yet making object Instantiate createing ===============
 public void palceIlustraion(string ilustration, float xPoition = 0F ,float yPosition = 0, float zPosition=0F)
                                 //배치시킬 오브젝트 이름 , 배치시킬 x축 위치,   배치시킬 y축 위치,     배치시킬 Y축 위치.
@@ -32,6 +33,7 @@ public void palceIlustraion(string ilustration, float xPoition = 0F ,float yPosi
 // ========  moveIlustration(오브젝트 움직임) code, moveing Ilustration or object ========
 float moveTimeInvok;
 GameObject ilustrationOBG;
+Vector3 startPosition;
 Vector3 moveDir;
 float timestart;
 void move ()
@@ -39,10 +41,10 @@ void move ()
         float deltaTime = Time.time - timestart;
 
         if (deltaTime < moveTimeInvok) {
-            Debug.Log(" is moveing!");
-            ilustrationOBG.transform.position = Vector3.Lerp (ilustrationOBG.transform.position, moveDir, deltaTime / moveTimeInvok);
+            Debug.Log($" {ilustrationOBG.transform.position}, {moveDir}is moveing!");
+            ilustrationOBG.transform.position = Vector3.Lerp (startPosition, moveDir, deltaTime/moveTimeInvok);
         } else {
-            this.transform.position = moveDir;
+            ilustrationOBG.transform.position = moveDir;
             CancelInvoke ("move"); // 애니메이션이 종료되면 invoke repeater 종료
         }
 }
@@ -64,6 +66,7 @@ public void moveIlustration(
             moveTimeInvok = moveTime;
             ilustrationOBG = GameObject.Find(ilustration);
             moveDir = new Vector3(xposition, yposition, zposition);
+            startPosition = ilustrationOBG.transform.position;
             timestart = Time.time;
             InvokeRepeating("move",0,0.016f);
             
@@ -167,7 +170,36 @@ public void fade (string fadeObjectName, float value, float chaingeTime)
 
 
 
+//=============================Animation cection=================================
 
+public void moveDown(string ilustration,float moveDapth=100,float moveTime=5)
+{
+           Debug.Log($"{name} is  satrt to move!");
+        // 일러스트에 대한 움직임. 템플릿 상하이동 1회. 
+        if (ilustration==null||GameObject.Find(ilustration)==null )
+            Debug.Log("없는데요?");
+        else
+        {
+            moveTimeInvok = moveTime;
+            ilustrationOBG = GameObject.Find(ilustration);
+            moveDir = new Vector3(ilustrationOBG.transform.position[0],ilustrationOBG.transform.position[1] - moveDapth, ilustrationOBG.transform.position[2]);
+            timestart = Time.time;
+            startPosition = ilustrationOBG.transform.position;
+            Debug.Log($"{startPosition},{moveDir} is  satrt to move!");
+            InvokeRepeating("move",0,0.016f);
+            StartCoroutine("moveDownReverse");
+            
+        }
+}
+IEnumerator moveDownReverse()
+{
+    yield return new WaitForSeconds(moveTimeInvok);
+    moveDir = startPosition;
+    startPosition = ilustrationOBG.transform.position;
+    timestart = Time.time;
+    InvokeRepeating("move",0,0.016f);
+    yield break;
+}
 
 
 
