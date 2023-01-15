@@ -27,7 +27,6 @@ public class defulte_vertical_movement : MonoBehaviour
         if (moveDiraction == true){ // 정방향이동
             DeltaTime += Time.deltaTime;
             this.transform.position = Vector3.Lerp (startLocation, moveDir, DeltaTime/moveTime);
-            Debug.Log($"{moveDir[1]- vector3Now[1]}현재 값");
             
             if(DeltaTime>moveTime){ //거의 다 도착하면 역방향이동으로 전환
                 DeltaTime = 0;
@@ -40,9 +39,7 @@ public class defulte_vertical_movement : MonoBehaviour
         else { // 역방향 이동.
             DeltaTime += Time.deltaTime;
             this.transform.position = Vector3.Lerp (startLocation, moveDir, DeltaTime/moveTime);
-            Debug.Log($"{DeltaTime}현재 값");
             if(DeltaTime>moveTime){  //거의 다 도착하면 정방향 이동으로 전환
-                Debug.Log($"{moveDir[1]- vector3Now[1]}현재 값");
                 DeltaTime =0;
                 Vector3 nextMovePosition = startLocation;
                 startLocation = moveDir;

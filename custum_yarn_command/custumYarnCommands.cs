@@ -11,13 +11,15 @@ public class custumYarnCommands : MonoBehaviour
 // ============= Yarn command defining  ===========
 private void Awake() {
                 
-                // DR.AddCommandHandler<string, float,float,float>("palceIlustraion", palceIlustraion);
-                DR.AddCommandHandler<string,float,float,float,float>("moveIlustration", moveIlustration);
-                DR.AddCommandHandler<string,float,float,float,float>("rotateIlustration", rotateIlustration);
-                DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
-                DR.AddCommandHandler<string,float,float>("fade", fade);
-                DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
-    }               
+        // DR.AddCommandHandler<string, float,float,float>("palceIlustraion", palceIlustraion);
+        DR.AddCommandHandler<string,float,float,float,float>("moveIlustration", moveIlustration);
+        DR.AddCommandHandler<string,float,float,float,float>("rotateIlustration", rotateIlustration);
+        DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
+        DR.AddCommandHandler<string,float,float>("fade", fade);
+        DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
+        DR.AddCommandHandler<string,float,float,float>("shakeHorizontal", shakeHorizontal);
+
+}               
 // =========== yet making object Instantiate createing ===============
 public void palceIlustraion(string ilustration, float xPoition = 0F ,float yPosition = 0, float zPosition=0F)
                                 //배치시킬 오브젝트 이름 , 배치시킬 x축 위치,   배치시킬 y축 위치,     배치시킬 Y축 위치.
@@ -171,7 +173,7 @@ public void fade (string fadeObjectName, float value, float chaingeTime)
 
 
 //=============================Animation cection=================================
-
+//========= moveDown then move origin========
 public void moveDown(string ilustration,float moveDapth=100,float moveTime=5)
 {
            Debug.Log($"{name} is  satrt to move!");
@@ -202,9 +204,50 @@ IEnumerator moveDownReverse()
 }
 
 
+//============== move horizontal fast repeating ==============
 
-
-
+Vector3 moveDirLeft,moveDirRight;
+float shakeHorizontalActive, activateTime;
+public void shakeHorizontal(string ilustration, float moveRange, float moveTime, float activeTime)
+{
+               Debug.Log($"{name} is  satrt to move!");
+       
+        if (ilustration==null||GameObject.Find(ilustration)==null )
+            Debug.Log("없는데요?");
+        else
+        {   activateTime = Time.time;
+            shakeHorizontalActive = activeTime;
+            moveTimeInvok = moveTime;
+            ilustrationOBG = GameObject.Find(ilustration);
+            moveDirLeft = new Vector3(ilustrationOBG.transform.position[0] - moveRange, ilustrationOBG.transform.position[1], ilustrationOBG.transform.position[2]);
+            moveDirRight = new Vector3(ilustrationOBG.transform.position[0]  + moveRange, ilustrationOBG.transform.position[1], ilustrationOBG.transform.position[2]);
+            Debug.Log($"{moveDirLeft},{moveDirRight} is  satrt to move!");
+            StartCoroutine("shakeHorizontalReverse");
+            
+        }
+}
+IEnumerator shakeHorizontalReverse()
+{
+    float deltaTime=0;
+    while (deltaTime<shakeHorizontalActive){
+    deltaTime = Time.time - activateTime;
+    timestart = Time.time;
+    startPosition = ilustrationOBG.transform.position;
+    moveDir = moveDirLeft;
+    Debug.Log($"{startPosition},{moveDir}{deltaTime} is  satrt to move!");
+    InvokeRepeating("move",0,0.016f);
+    yield return new WaitForSeconds(moveTimeInvok);
+    moveDir = moveDirRight;
+    Debug.Log($"{startPosition},{moveDir} is  satrt to move!");
+    startPosition = ilustrationOBG.transform.position;
+    timestart = Time.time;
+    InvokeRepeating("move",0,0.016f);
+    yield return new WaitForSeconds(moveTimeInvok);
+    }
+    StopCoroutine("moveDownReverse");
+    deltaTime = 0;
+    
+}
 
 
 
