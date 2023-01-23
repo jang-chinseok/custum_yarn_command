@@ -15,9 +15,10 @@ private void Awake() {
         DR.AddCommandHandler<string,float,float,float,float>("moveIlustration", moveIlustration);
         DR.AddCommandHandler<string,float,float,float,float>("rotateIlustration", rotateIlustration);
         DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
-        DR.AddCommandHandler<string,float,float>("fade", fade);
+        // DR.AddCommandHandler<string,float,float>("fade", fade);
         DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
         DR.AddCommandHandler<string,float,float,float>("shakeHorizontal", shakeHorizontal);
+        DR.AddCommandHandler<string, float>("testAnimation", testAnimation);
 
 }               
 // =========== yet making object Instantiate createing ===============
@@ -247,6 +248,45 @@ IEnumerator shakeHorizontalReverse()
     StopCoroutine("moveDownReverse");
     deltaTime = 0;
     
+}
+
+void testAnimation(string ilustration, float moveTimeTotal)
+{
+    float moveScale = 100; // 상하 이동 범위 외부에서 수정 가능한 테스트 숫자. 조정후 fix된 값이 생기면 그 값으로 고정 예정.
+    float moveTime = 3; // 상하 이동 속도
+    Vector3 startLocation= this.transform.position; // 오브젝트의 이동 시작 위치
+    bool moveDiraction = true; // 오브젝트가 움직이는 방향
+    Vector3 moveDir = new Vector3(this.transform.position[0],this.transform.position[1]+moveScale, this.transform.position[2]);  // 오브젝트가 이동할 좌표
+
+    float DeltaTime = 0;
+    while(DeltaTime<moveTimeTotal)
+    {
+        Vector3 vector3Now =  this.transform.position; // 오브젝트의 현재 위치 업데이트
+        if (moveDiraction == true)
+        { // 정방향이동
+            DeltaTime += Time.deltaTime;
+            this.transform.position = Vector3.Lerp (startLocation, moveDir, DeltaTime/moveTime);
+            
+            if(DeltaTime>moveTime){ //거의 다 도착하면 역방향이동으로 전환
+                DeltaTime = 0;
+                Vector3 nextMovePosition = startLocation;
+                startLocation = moveDir;
+                moveDir = nextMovePosition;
+                moveDiraction = false;    //거의 다 도착하면 역방향이동으로 전환
+            }
+        }
+        else { // 역방향 이동.
+            DeltaTime += Time.deltaTime;
+            this.transform.position = Vector3.Lerp (startLocation, moveDir, DeltaTime/moveTime);
+            if(DeltaTime>moveTime){  //거의 다 도착하면 정방향 이동으로 전환
+                DeltaTime =0;
+                Vector3 nextMovePosition = startLocation;
+                startLocation = moveDir;
+                moveDir = nextMovePosition;
+                moveDiraction = true;  // 정방향이동
+            }
+        }
+        Debug.Log($"{moveDiraction}현재 움직이는 방향");}
 }
 
 
