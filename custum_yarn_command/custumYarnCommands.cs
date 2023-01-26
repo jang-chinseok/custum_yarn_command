@@ -14,7 +14,7 @@ private void Awake() {
         // DR.AddCommandHandler<string, float,float,float>("palceIlustraion", palceIlustraion);
         DR.AddCommandHandler<string,float,float,float,float>("moveIlustration", moveIlustration);
         DR.AddCommandHandler<string,float,float,float,float>("rotateIlustration", rotateIlustration);
-        DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
+        // DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
         // DR.AddCommandHandler<string,float,float>("fade", fade);
         DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
         DR.AddCommandHandler<string,float,float,float>("shakeHorizontal", shakeHorizontal);
@@ -109,22 +109,22 @@ public void rotateIlustration(
 }
     
 // ========= object activate code =============
-public void obejctActive(string objectName, string setMode)
-{
-    var objectis = GameObject.Find("Ilustration_System").transform.Find(objectName);
-    if (setMode=="False") 
-    {
-        objectis.gameObject.SetActive(false);
-        Debug.Log($"{setMode} is flase");
-    }
-    else if(setMode=="True")
-    {
-        objectis.gameObject.SetActive(true);
-        Debug.Log($"{setMode} is ture");
-    }
-    else
-        Debug.Log($"{setMode} is incorrect, it can be only True or False");
-}
+// public void obejctActive(string objectName, string setMode)
+// {
+//     var objectis = GameObject.Find("Ilustration_System").transform.Find(objectName);
+//     if (setMode=="False") 
+//     {
+//         objectis.gameObject.SetActive(false);
+//         Debug.Log($"{setMode} is flase");
+//     }
+//     else if(setMode=="True")
+//     {
+//         objectis.gameObject.SetActive(true);
+//         Debug.Log($"{setMode} is ture");
+//     }
+//     else
+//         Debug.Log($"{setMode} is incorrect, it can be only True or False");
+// }
 
 // ========== fade in/out code ===============
 float fadeRespect;
