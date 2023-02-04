@@ -14,23 +14,27 @@ public class custumYarnCommandDoTween : MonoBehaviour
     {
 
         // 현재 이 함수들은 모두 스프라이트 렌더러를 조작하는 방식을 취하고 있음. 따라서, 배치-호출 되는 오브젝트는 모두 스프라이트 렌더러를가진 스프라이트여야만 함.
-        DR.AddCommandHandler<GameObject,float,float,float,float>("move", move);
+        DR.AddCommandHandler<GameObject,float,float,float>("move", move);
         DR.AddCommandHandler<GameObject,float,float,float,float>("rotate", rotate);
         DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
         DR.AddCommandHandler<GameObject,float,float>("fade", fade);
         DR.AddCommandHandler<GameObject,Color,float>("changeColor", changeColor);
         DR.AddCommandHandler<string, GameObject>("createPrefeb", createPrefeb);
         DR.AddCommandHandler<GameObject>("distroyPrefab", distroyPrefab);
+        DR.AddCommandHandler<string>("displayImg",displayImg);
+        DR.AddCommandHandler<string>("soundPlay", soundPlay);
+        DR.AddCommandHandler<string>("efect", efect);
+
         // DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
         // DR.AddCommandHandler<string,float,float,float>("shakeHorizontal", shakeHorizontal);
 
     }
 
     // Update is called once per frame
-    void move(GameObject objectName,float xPosition,float yPosition,float zPosition,float moveSpeed){ 
-        //UI이미지 기반이 아니기 때문에, z값에 의한 거리변화가 존재함. 즉 z값으로 move하는 경우, 
-        Vector3 positionNow = objectName.transform.position; // 현재 오브젝트의 좌표
-        Vector3 FacingPosition = new Vector3(positionNow[0]+xPosition, positionNow[1]+yPosition, positionNow[2]+zPosition); //입력받은 좌표값을 더함.
+    void move(GameObject objectName,float xPosition,float yPosition,float moveSpeed){ 
+        //UI이미지 기반이 아니기 때문에, z값에 의한 거리변화가 존재함. 즉 z값으로 move하는 경우, 카메라에서부터 멀어짐.
+        Vector2 positionNow = objectName.transform.position; // 현재 오브젝트의 좌표
+        Vector2 FacingPosition = new Vector2(positionNow[0]+xPosition, positionNow[1]+yPosition); //입력받은 좌표값을 더함.
         objectName.transform.DOMove(FacingPosition, moveSpeed);//입력받은 값 만큼 움직인 좌표로 이동.
     }
     void rotate(GameObject objectName,float xAngle,float yAngle,float zAngle,float rotateSpeed){
@@ -70,14 +74,17 @@ public class custumYarnCommandDoTween : MonoBehaviour
         Instantiate(prefabGameObject, gameObjectName.transform);
     }
     void distroyPrefab (GameObject gameObjectName){
-
         Destroy(gameObjectName,0);
     }
+    void displayImg(string ImageName){
+         
+    }
+    void soundPlay(string playFile){
 
+    } 
+    void efect(string EfectName){
 
-
-    
-    
+    }
     void Update()
     {
         
