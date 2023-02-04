@@ -4,27 +4,44 @@ using UnityEngine;
 using Yarn.Unity;
 using UnityEngine.UI;
 using DG.Tweening;
+// using backgroundSound;
+
+// 캐릭터 생성시 전체화면 길이 기반으로 특정 좌표에 생성. 
+// int i_width = Screen.width;
+// int i_height = Screen.height;
 
 public class custumYarnCommandDoTween : MonoBehaviour
 {
+    int this_width = Screen.width;
+    int this_height = Screen.height;
 
     public DialogueRunner DR;
+    public GameObject commander;
+    public AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = commander.GetComponent<AudioSource>();
 
+        Vector2 center = new Vector2(Screen.width*0.5f,Screen.height*0.5f);
+        GameObject.Find("center").transform.position=center;
+        Vector2 left = new Vector2(Screen.width*0.25f,Screen.height*0.5f);
+        GameObject.Find("left").transform.position=left;
+        Vector2 right = new Vector2(Screen.width*0.75f,Screen.height*0.5f);
+        GameObject.Find("right").transform.position=right;
+        
         // 현재 이 함수들은 모두 스프라이트 렌더러를 조작하는 방식을 취하고 있음. 따라서, 배치-호출 되는 오브젝트는 모두 스프라이트 렌더러를가진 스프라이트여야만 함.
         DR.AddCommandHandler<GameObject,float,float,float>("move", move);
         DR.AddCommandHandler<GameObject,float,float,float,float>("rotate", rotate);
         DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
         DR.AddCommandHandler<GameObject,float,float>("fade", fade);
         DR.AddCommandHandler<GameObject,Color,float>("changeColor", changeColor);
-        DR.AddCommandHandler<string, GameObject>("createPrefeb", createPrefeb);
+        DR.AddCommandHandler<string,string, GameObject>("createPrefab", createPrefab);
         DR.AddCommandHandler<GameObject>("distroyPrefab", distroyPrefab);
         DR.AddCommandHandler<string>("displayImg",displayImg);
+        DR.AddCommandHandler<string>("BGMPlay",BGMPlay);
         DR.AddCommandHandler<string>("soundPlay", soundPlay);
         DR.AddCommandHandler<string>("efect", efect);
-
         // DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
         // DR.AddCommandHandler<string,float,float,float>("shakeHorizontal", shakeHorizontal);
 
@@ -66,12 +83,22 @@ public class custumYarnCommandDoTween : MonoBehaviour
         else
             Debug.Log($"{setMode} is incorrect, it can be only True or False");
     }
-
-    void createPrefeb(string prefabName, GameObject gameObjectName=null){
+    void createPrefab(string prefabName, string position, GameObject gameObjectName=null){
         if (gameObjectName==null)
             gameObjectName = GameObject.Find("Ilustration_System");
-        GameObject prefabGameObject =  Resources.Load<GameObject>("Prefeb/amber");
-        Instantiate(prefabGameObject, gameObjectName.transform);
+
+        GameObject prefabGameObject =  Resources.Load<GameObject>($"prefab/{prefabName}");
+        switch(position){
+            case "left": 
+                        Instantiate(prefabGameObject, gameObjectName.transform.Find("left").transform);
+                        break;
+            case "right": 
+                        Instantiate(prefabGameObject, gameObjectName.transform.Find("right").transform);
+                        break;
+            case "center":
+                        Instantiate(prefabGameObject, gameObjectName.transform.Find("center").transform);
+                        break;
+        }
     }
     void distroyPrefab (GameObject gameObjectName){
         Destroy(gameObjectName,0);
@@ -80,11 +107,19 @@ public class custumYarnCommandDoTween : MonoBehaviour
          
     }
     void soundPlay(string playFile){
+        // audioSource.Play(playFile);
+    } 
+    void BGMPlay(string playFile){
 
+        stringAudio BGMPlaySound = audioSource.GetComponent<backgroundSound>().BGMList;
+        audioSource.clip = BGMPlaySound[playFile];
+        audioSource.Play();
+        Debug.Log($"실행중{BGMPlaySound[playFile]}");
     } 
     void efect(string EfectName){
 
     }
+  
     void Update()
     {
         
