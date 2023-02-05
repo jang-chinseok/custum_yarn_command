@@ -12,8 +12,9 @@ public class stringsprite : SerializableDictionary<string, Sprite>{}
 public class yarnBackgroundSystem : MonoBehaviour
 {
     public GameObject Background;
-    public stringsprite BackGroundImage;
-    public Image backgroundIMG;
+    public stringsprite BackgroundImage;
+    private Image backgroundIMG;
+    public float changeTime=2;
     Sprite ChangeImg;
 
     void Start()
@@ -22,8 +23,8 @@ public class yarnBackgroundSystem : MonoBehaviour
     }
     [YarnCommand("changeBackground")]
     public void changeBackground(string backgroundIMGName){
-        Debug.Log($"현재 이미지 리스트{BackGroundImage[backgroundIMGName]}");
-        ChangeImg = BackGroundImage[backgroundIMGName];
+        Debug.Log($"현재 이미지 리스트{BackgroundImage[backgroundIMGName]}");
+        ChangeImg = BackgroundImage[backgroundIMGName];
         StartCoroutine(WaitForIt(ChangeImg));
         
         
@@ -31,10 +32,10 @@ public class yarnBackgroundSystem : MonoBehaviour
     }
     IEnumerator WaitForIt(Sprite ChangeImg)
     {
-        yield return backgroundIMG.DOFade(0, 3);
-        yield return new WaitForSeconds(3);
+        yield return backgroundIMG.DOFade(0, changeTime/2);
+        yield return new WaitForSeconds(changeTime/2);
         backgroundIMG.sprite = ChangeImg;
-        yield return backgroundIMG.DOFade(1, 3);
+        yield return backgroundIMG.DOFade(1, changeTime/2);
     }
     // Start is called before the first frame update
     

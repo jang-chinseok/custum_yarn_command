@@ -14,14 +14,13 @@ public class custumYarnCommandDoTween : MonoBehaviour
 {
     int this_width = Screen.width;
     int this_height = Screen.height;
-
     public DialogueRunner DR;
-    public GameObject commander;
-    public AudioSource audioSource;
-    // Start is called before the first frame update
+    public GameObject BGMPlyer;
+    private AudioSource audioSource;
+ 
     void Start()
     {
-        audioSource = commander.GetComponent<AudioSource>();
+        audioSource = BGMPlyer.GetComponent<AudioSource>();
 
         Vector2 center = new Vector2(Screen.width*0.5f,Screen.height*0.5f);
         GameObject.Find("center").transform.position=center;
@@ -37,9 +36,9 @@ public class custumYarnCommandDoTween : MonoBehaviour
         DR.AddCommandHandler<GameObject,float,float>("fade", fade);
         DR.AddCommandHandler<GameObject,Color,float>("changeColor", changeColor);
         DR.AddCommandHandler<string,string, GameObject>("createPrefab", createPrefab);
-        DR.AddCommandHandler<GameObject>("distroyPrefab", distroyPrefab);
-        DR.AddCommandHandler<string>("displayImg",displayImg);
+        DR.AddCommandHandler<GameObject>("distroyObject ", distroyObject );
         DR.AddCommandHandler<string>("BGMPlay",BGMPlay);
+        DR.AddCommandHandler<string>("displayImg",displayImg);
         DR.AddCommandHandler<string>("soundPlay", soundPlay);
         DR.AddCommandHandler<string>("efect", efect);
         // DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
@@ -47,7 +46,7 @@ public class custumYarnCommandDoTween : MonoBehaviour
 
     }
 
-    // Update is called once per frame
+//===========오브젝트 움직임 관련 함수===========
     void move(GameObject objectName,float xPosition,float yPosition,float moveSpeed){ 
         //UI이미지 기반이 아니기 때문에, z값에 의한 거리변화가 존재함. 즉 z값으로 move하는 경우, 카메라에서부터 멀어짐.
         Vector2 positionNow = objectName.transform.position; // 현재 오브젝트의 좌표
@@ -59,6 +58,7 @@ public class custumYarnCommandDoTween : MonoBehaviour
         Vector3 facingAngle = new Vector3(angleNow[0]+xAngle, angleNow[1]+yAngle, angleNow[2]+zAngle);//입력받은 좌표값을 더함.
         objectName.transform.DORotate(facingAngle, rotateSpeed);//입력받은 값 만큼 회전 이동.
     }
+//=============오브젝트 조작 관련 함수==========
     void changeColor (GameObject objectName,Color color,float changeSpeed){ // 색 fade 함수.
         SpriteRenderer objectColor = objectName.GetComponent<SpriteRenderer>();
         objectColor.DOColor(color, changeSpeed);
@@ -67,15 +67,15 @@ public class custumYarnCommandDoTween : MonoBehaviour
         SpriteRenderer objectColor = objectName.GetComponent<SpriteRenderer>();
         objectColor.DOFade(alpah, fadeSpeed);
     }
-    // 오브젝트 엑티브 함수
+//==============오브젝트 엑티브 함수==============
     void obejctActive(string objectName, string setMode){
         var objectis = GameObject.Find("Ilustration_System").transform.Find(objectName);
-        if (setMode=="False") 
+        if (setMode=="false") 
         {
             objectis.gameObject.SetActive(false);
             Debug.Log($"{setMode} is flase");
         }
-        else if(setMode=="True")
+        else if(setMode=="true")
         {
             objectis.gameObject.SetActive(true);
             Debug.Log($"{setMode} is ture");
@@ -83,6 +83,7 @@ public class custumYarnCommandDoTween : MonoBehaviour
         else
             Debug.Log($"{setMode} is incorrect, it can be only True or False");
     }
+//=============오브젝트 생성-삭제 함수=============
     void createPrefab(string prefabName, string position, GameObject gameObjectName=null){
         if (gameObjectName==null)
             gameObjectName = GameObject.Find("Ilustration_System");
@@ -100,12 +101,14 @@ public class custumYarnCommandDoTween : MonoBehaviour
                         break;
         }
     }
-    void distroyPrefab (GameObject gameObjectName){
+    void distroyObject  (GameObject gameObjectName){
         Destroy(gameObjectName,0);
     }
+//==========이미지 조작 관련 함수===========
     void displayImg(string ImageName){
          
     }
+//==========소리 조작 관련 함수 ============
     void soundPlay(string playFile){
         // audioSource.Play(playFile);
     } 
