@@ -11,12 +11,16 @@ public class custumYarnCommands : MonoBehaviour
 // ============= Yarn command defining  ===========
 private void Awake() {
                 
-                // DR.AddCommandHandler<string, float,float,float>("palceIlustraion", palceIlustraion);
-                DR.AddCommandHandler<string,float,float,float,float>("moveIlustration", moveIlustration);
-                DR.AddCommandHandler<string,float,float,float,float>("rotateIlustration", rotateIlustration);
-                DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
-                DR.AddCommandHandler<string,float,float>("fade", fade);
-    }
+        // DR.AddCommandHandler<string, float,float,float>("palceIlustraion", palceIlustraion);
+        DR.AddCommandHandler<string,float,float,float,float>("moveIlustration", moveIlustration);
+        DR.AddCommandHandler<string,float,float,float,float>("rotateIlustration", rotateIlustration);
+        // DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
+        // DR.AddCommandHandler<string,float,float>("fade", fade);
+        DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
+        DR.AddCommandHandler<string,float,float,float>("shakeHorizontal", shakeHorizontal);
+        DR.AddCommandHandler<string, float>("testAnimation", testAnimation);
+
+}               
 // =========== yet making object Instantiate createing ===============
 public void palceIlustraion(string ilustration, float xPoition = 0F ,float yPosition = 0, float zPosition=0F)
                                 //배치시킬 오브젝트 이름 , 배치시킬 x축 위치,   배치시킬 y축 위치,     배치시킬 Y축 위치.
@@ -32,6 +36,7 @@ public void palceIlustraion(string ilustration, float xPoition = 0F ,float yPosi
 // ========  moveIlustration(오브젝트 움직임) code, moveing Ilustration or object ========
 float moveTimeInvok;
 GameObject ilustrationOBG;
+Vector3 startPosition;
 Vector3 moveDir;
 float timestart;
 void move ()
@@ -39,10 +44,10 @@ void move ()
         float deltaTime = Time.time - timestart;
 
         if (deltaTime < moveTimeInvok) {
-            Debug.Log(" is moveing!");
-            ilustrationOBG.transform.position = Vector3.Lerp (ilustrationOBG.transform.position, moveDir, deltaTime / moveTimeInvok);
+            Debug.Log($" {ilustrationOBG.transform.position}, {moveDir}is moveing!");
+            ilustrationOBG.transform.position = Vector3.Lerp (startPosition, moveDir, deltaTime/moveTimeInvok);
         } else {
-            this.transform.position = moveDir;
+            ilustrationOBG.transform.position = moveDir;
             CancelInvoke ("move"); // 애니메이션이 종료되면 invoke repeater 종료
         }
 }
@@ -64,6 +69,7 @@ public void moveIlustration(
             moveTimeInvok = moveTime;
             ilustrationOBG = GameObject.Find(ilustration);
             moveDir = new Vector3(xposition, yposition, zposition);
+            startPosition = ilustrationOBG.transform.position;
             timestart = Time.time;
             InvokeRepeating("move",0,0.016f);
             
@@ -103,22 +109,22 @@ public void rotateIlustration(
 }
     
 // ========= object activate code =============
-public void obejctActive(string objectName, string setMode)
-{
-    var objectis = GameObject.Find("Ilustration_System").transform.Find(objectName);
-    if (setMode=="False") 
-    {
-        objectis.gameObject.SetActive(false);
-        Debug.Log($"{setMode} is flase");
-    }
-    else if(setMode=="True")
-    {
-        objectis.gameObject.SetActive(true);
-        Debug.Log($"{setMode} is ture");
-    }
-    else
-        Debug.Log($"{setMode} is incorrect, it can be only True or False");
-}
+// public void obejctActive(string objectName, string setMode)
+// {
+//     var objectis = GameObject.Find("Ilustration_System").transform.Find(objectName);
+//     if (setMode=="False") 
+//     {
+//         objectis.gameObject.SetActive(false);
+//         Debug.Log($"{setMode} is flase");
+//     }
+//     else if(setMode=="True")
+//     {
+//         objectis.gameObject.SetActive(true);
+//         Debug.Log($"{setMode} is ture");
+//     }
+//     else
+//         Debug.Log($"{setMode} is incorrect, it can be only True or False");
+// }
 
 // ========== fade in/out code ===============
 float fadeRespect;
@@ -167,12 +173,121 @@ public void fade (string fadeObjectName, float value, float chaingeTime)
 
 
 
+//=============================Animation cection=================================
+//========= moveDown then move origin========
+public void moveDown(string ilustration,float moveDapth=100,float moveTime=5)
+{
+           Debug.Log($"{name} is  satrt to move!");
+        // 일러스트에 대한 움직임. 템플릿 상하이동 1회. 
+        if (ilustration==null||GameObject.Find(ilustration)==null )
+            Debug.Log("없는데요?");
+        else
+        {
+            moveTimeInvok = moveTime;
+            ilustrationOBG = GameObject.Find(ilustration);
+            moveDir = new Vector3(ilustrationOBG.transform.position[0],ilustrationOBG.transform.position[1] - moveDapth, ilustrationOBG.transform.position[2]);
+            timestart = Time.time;
+            startPosition = ilustrationOBG.transform.position;
+            Debug.Log($"{startPosition},{moveDir} is  satrt to move!");
+            InvokeRepeating("move",0,0.016f);
+            StartCoroutine("moveDownReverse");
+            
+        }
+}
+IEnumerator moveDownReverse()
+{
+    yield return new WaitForSeconds(moveTimeInvok);
+    moveDir = startPosition;
+    startPosition = ilustrationOBG.transform.position;
+    timestart = Time.time;
+    InvokeRepeating("move",0,0.016f);
+    yield break;
+}
 
 
+//============== move horizontal fast repeating ==============
 
+Vector3 moveDirLeft,moveDirRight;
+float shakeHorizontalActive, activateTime;
+public void shakeHorizontal(string ilustration, float moveRange, float moveTime, float activeTime)
+{
+               Debug.Log($"{name} is  satrt to move!");
+       
+        if (ilustration==null||GameObject.Find(ilustration)==null )
+            Debug.Log("없는데요?");
+        else
+        {   activateTime = Time.time;
+            shakeHorizontalActive = activeTime;
+            moveTimeInvok = moveTime;
+            ilustrationOBG = GameObject.Find(ilustration);
+            moveDirLeft = new Vector3(ilustrationOBG.transform.position[0] - moveRange, ilustrationOBG.transform.position[1], ilustrationOBG.transform.position[2]);
+            moveDirRight = new Vector3(ilustrationOBG.transform.position[0]  + moveRange, ilustrationOBG.transform.position[1], ilustrationOBG.transform.position[2]);
+            Debug.Log($"{moveDirLeft},{moveDirRight} is  satrt to move!");
+            StartCoroutine("shakeHorizontalReverse");
+            
+        }
+}
+IEnumerator shakeHorizontalReverse()
+{
+    float deltaTime=0;
+    while (deltaTime<shakeHorizontalActive){
+    deltaTime = Time.time - activateTime;
+    timestart = Time.time;
+    startPosition = ilustrationOBG.transform.position;
+    moveDir = moveDirLeft;
+    Debug.Log($"{startPosition},{moveDir}{deltaTime} is  satrt to move!");
+    InvokeRepeating("move",0,0.016f);
+    yield return new WaitForSeconds(moveTimeInvok);
+    moveDir = moveDirRight;
+    Debug.Log($"{startPosition},{moveDir} is  satrt to move!");
+    startPosition = ilustrationOBG.transform.position;
+    timestart = Time.time;
+    InvokeRepeating("move",0,0.016f);
+    yield return new WaitForSeconds(moveTimeInvok);
+    }
+    StopCoroutine("moveDownReverse");
+    deltaTime = 0;
+    
+}
 
+void testAnimation(string ilustration, float moveTimeTotal)
+{
+    float moveScale = 100; // 상하 이동 범위 외부에서 수정 가능한 테스트 숫자. 조정후 fix된 값이 생기면 그 값으로 고정 예정.
+    float moveTime = 3; // 상하 이동 속도
+    Vector3 startLocation= this.transform.position; // 오브젝트의 이동 시작 위치
+    bool moveDiraction = true; // 오브젝트가 움직이는 방향
+    Vector3 moveDir = new Vector3(this.transform.position[0],this.transform.position[1]+moveScale, this.transform.position[2]);  // 오브젝트가 이동할 좌표
 
-
+    float DeltaTime = 0;
+    while(DeltaTime<moveTimeTotal)
+    {
+        Vector3 vector3Now =  this.transform.position; // 오브젝트의 현재 위치 업데이트
+        if (moveDiraction == true)
+        { // 정방향이동
+            DeltaTime += Time.deltaTime;
+            this.transform.position = Vector3.Lerp (startLocation, moveDir, DeltaTime/moveTime);
+            
+            if(DeltaTime>moveTime){ //거의 다 도착하면 역방향이동으로 전환
+                DeltaTime = 0;
+                Vector3 nextMovePosition = startLocation;
+                startLocation = moveDir;
+                moveDir = nextMovePosition;
+                moveDiraction = false;    //거의 다 도착하면 역방향이동으로 전환
+            }
+        }
+        else { // 역방향 이동.
+            DeltaTime += Time.deltaTime;
+            this.transform.position = Vector3.Lerp (startLocation, moveDir, DeltaTime/moveTime);
+            if(DeltaTime>moveTime){  //거의 다 도착하면 정방향 이동으로 전환
+                DeltaTime =0;
+                Vector3 nextMovePosition = startLocation;
+                startLocation = moveDir;
+                moveDir = nextMovePosition;
+                moveDiraction = true;  // 정방향이동
+            }
+        }
+        Debug.Log($"{moveDiraction}현재 움직이는 방향");}
+}
 
 
 
