@@ -4,16 +4,9 @@ using UnityEngine;
 using Yarn.Unity;
 using UnityEngine.UI;
 using DG.Tweening;
-// using backgroundSound;
 
-// 캐릭터 생성시 전체화면 길이 기반으로 특정 좌표에 생성. 
-// int i_width = Screen.width;
-// int i_height = Screen.height;
-
-public class custumYarnCommandDoTween : MonoBehaviour
+public class customYarnCommandDoTween : MonoBehaviour
 {
-    int this_width = Screen.width;
-    int this_height = Screen.height;
     public DialogueRunner DR;
     public GameObject BGMPlyer;
     private AudioSource audioSource;
@@ -32,11 +25,11 @@ public class custumYarnCommandDoTween : MonoBehaviour
         // 현재 이 함수들은 모두 스프라이트 렌더러를 조작하는 방식을 취하고 있음. 따라서, 배치-호출 되는 오브젝트는 모두 스프라이트 렌더러를가진 스프라이트여야만 함.
         DR.AddCommandHandler<GameObject,float,float,float>("move", move);
         DR.AddCommandHandler<GameObject,float,float,float,float>("rotate", rotate);
-        DR.AddCommandHandler<string,string>("obejctActive", obejctActive);
+        DR.AddCommandHandler<string,string>("ObjectActive", ObjectActive);
         DR.AddCommandHandler<GameObject,float,float>("fade", fade);
         DR.AddCommandHandler<GameObject,Color,float>("changeColor", changeColor);
         DR.AddCommandHandler<string,string, GameObject>("createPrefab", createPrefab);
-        DR.AddCommandHandler<GameObject>("distroyObject ", distroyObject );
+        DR.AddCommandHandler<GameObject>("destroyObject ", destroyObject );
         DR.AddCommandHandler<string>("BGMPlay",BGMPlay);
         DR.AddCommandHandler<string>("displayImg",displayImg);
         DR.AddCommandHandler<string>("soundPlay", soundPlay);
@@ -68,7 +61,7 @@ public class custumYarnCommandDoTween : MonoBehaviour
         objectColor.DOFade(alpah, fadeSpeed);
     }
 //==============오브젝트 엑티브 함수==============
-    void obejctActive(string objectName, string setMode){
+    void ObjectActive(string objectName, string setMode){
         var objectis = GameObject.Find("Ilustration_System").transform.Find(objectName);
         if (setMode=="false") 
         {
@@ -101,7 +94,7 @@ public class custumYarnCommandDoTween : MonoBehaviour
                         break;
         }
     }
-    void distroyObject  (GameObject gameObjectName){
+    void destroyObject  (GameObject gameObjectName){
         Destroy(gameObjectName,0);
     }
 //==========이미지 조작 관련 함수===========
@@ -114,7 +107,7 @@ public class custumYarnCommandDoTween : MonoBehaviour
     } 
     void BGMPlay(string playFile){
 
-        stringAudio BGMPlaySound = audioSource.GetComponent<backgroundSound>().BGMList;
+        stringAudio BGMPlaySound = audioSource.GetComponent<backGroundSound>().BGMList;
         audioSource.clip = BGMPlaySound[playFile];
         audioSource.Play();
         Debug.Log($"실행중{BGMPlaySound[playFile]}");
