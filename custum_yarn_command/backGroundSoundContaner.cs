@@ -5,7 +5,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class stringAudio : SerializableDictionary<string, AudioClip>{}
-public class backGroundSound : MonoBehaviour
+public class backGroundSoundContaner : MonoBehaviour
 {
 
     public stringAudio BGMList;

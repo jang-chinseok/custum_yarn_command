@@ -21,7 +21,7 @@ public class soundSystem : MonoBehaviour
     } 
     void BGMPlay(string playFile){
 
-        stringAudio BGMPlaySound = audioSource.GetComponent<backGroundSound>().BGMList;
+        stringAudio BGMPlaySound = audioSource.GetComponent<backGroundSoundContaner>().BGMList;
         audioSource.clip = BGMPlaySound[playFile];
         audioSource.Play();
         Debug.Log($"실행중{BGMPlaySound[playFile]}");
