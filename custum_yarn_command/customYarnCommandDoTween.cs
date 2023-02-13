@@ -8,13 +8,9 @@ using DG.Tweening;
 public class customYarnCommandDoTween : MonoBehaviour
 {
     public DialogueRunner DR;
-    public GameObject BGMPlyer;
-    private AudioSource audioSource;
  
     void Start()
     {
-        audioSource = BGMPlyer.GetComponent<AudioSource>();
-
         Vector2 center = new Vector2(Screen.width*0.5f,Screen.height*0.5f);
         GameObject.Find("center").transform.position=center;
         Vector2 left = new Vector2(Screen.width*0.25f,Screen.height*0.5f);
@@ -30,13 +26,10 @@ public class customYarnCommandDoTween : MonoBehaviour
         DR.AddCommandHandler<GameObject,Color,float>("changeColor", changeColor);
         DR.AddCommandHandler<string,string, GameObject>("createPrefab", createPrefab);
         DR.AddCommandHandler<GameObject>("destroyObject ", destroyObject );
-        DR.AddCommandHandler<string>("BGMPlay",BGMPlay);
         DR.AddCommandHandler<string>("displayImg",displayImg);
-        DR.AddCommandHandler<string>("soundPlay", soundPlay);
         DR.AddCommandHandler<string>("efect", efect);
         // DR.AddCommandHandler<string,float,float>("moveDown", moveDown);
         // DR.AddCommandHandler<string,float,float,float>("shakeHorizontal", shakeHorizontal);
-
     }
 
 //===========오브젝트 움직임 관련 함수===========
@@ -56,9 +49,9 @@ public class customYarnCommandDoTween : MonoBehaviour
         SpriteRenderer objectColor = objectName.GetComponent<SpriteRenderer>();
         objectColor.DOColor(color, changeSpeed);
     }
-    void fade (GameObject objectName,float alpah,float fadeSpeed){ //알파값 fade 함수.
+    void fade (GameObject objectName,float alpha,float fadeSpeed){ //알파값 fade 함수.
         SpriteRenderer objectColor = objectName.GetComponent<SpriteRenderer>();
-        objectColor.DOFade(alpah, fadeSpeed);
+        objectColor.DOFade(alpha, fadeSpeed);
     }
 //==============오브젝트 엑티브 함수==============
     void ObjectActive(string objectName, string setMode){
@@ -99,19 +92,12 @@ public class customYarnCommandDoTween : MonoBehaviour
     }
 //==========이미지 조작 관련 함수===========
     void displayImg(string ImageName){
-         
-    }
-//==========소리 조작 관련 함수 ============
-    void soundPlay(string playFile){
-        // audioSource.Play(playFile);
-    } 
-    void BGMPlay(string playFile){
+         // 일러스트 작은 사이즈로 생성. 
+         // 일러스트 사이즈 점점 크게만들기.
+         // 일러스트 알파값 페이드 인 하기.
 
-        stringAudio BGMPlaySound = audioSource.GetComponent<backGroundSound>().BGMList;
-        audioSource.clip = BGMPlaySound[playFile];
-        audioSource.Play();
-        Debug.Log($"실행중{BGMPlaySound[playFile]}");
-    } 
+    }
+    // 일러스트 제거 커멘트 제작 필요.
     void efect(string EfectName){
 
     }
